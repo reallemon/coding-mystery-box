@@ -14,7 +14,7 @@ def main():
         st.button(label='Reset', on_click=clear_session_state)
     
     if st.session_state.random != []:
-        for option in st.session_state.random:
+        for option in reversed(st.session_state.random):
             st.write('## Input')
             st.write(f"{option['input']['name']}: {option['input']['description']}")
             
