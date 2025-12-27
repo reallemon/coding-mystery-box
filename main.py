@@ -16,7 +16,11 @@ def main():
         st.button(label='Reset', on_click=clear_session_state)
     
     if st.session_state.random != []:
-        for option in reversed(st.session_state.random):
+        for i in range(len(st.session_state.random) -1, -1, -1):
+            option = st.session_state.random[i]
+            
+            st.button('🗑️', key=f'delete_{i}', on_click=delete_index, args=(i,))
+            
             st.write('## Input')
             st.write(f"{option['input']['name']}: {option['input']['description']}")
             
@@ -27,6 +31,8 @@ def main():
             st.write(f"{option['output']['name']}: {option['output']['description']}")
             st.write('---')
 
+def delete_index(index):
+    del st.session_state.random[index]
 
 def clear_session_state():
     if 'random' in st.session_state:
