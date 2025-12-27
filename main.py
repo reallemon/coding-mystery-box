@@ -3,6 +3,8 @@ import json
 import random
 
 def main(): 
+    st.title('Coding Mystery Box')
+    
     if 'random' not in st.session_state:
         st.session_state['random'] = []
     
