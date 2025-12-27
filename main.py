@@ -56,11 +56,11 @@ def main():
                 with c1:
                     st.write("")
                     st.write("")
-                    st.button('🔄', key=f'reroll_outputs_{i}', on_click=reroll_idea, args=(i, 'outputs',))
+                    st.button('🔄', key=f'reroll_architectures_{i}', on_click=reroll_idea, args=(i, 'architectures',))
                 
                 with c2:
-                    st.write('## Output')
-                    st.write(f"{option['outputs']['name']}: {option['outputs']['description']}")
+                    st.write('## Architecture')
+                    st.write(f"{option['architectures']['name']}: {option['architectures']['description']}")
 
 def reroll_idea(index, category_key):
     st.session_state.random[index][category_key] = random.choice(st.session_state['data'][category_key])
@@ -77,12 +77,12 @@ def add_random_choice():
             
     rand_input = random.choice(data['inputs'])
     rand_constraint = random.choice(data['constraints'])
-    rand_output = random.choice(data['outputs'])
+    rand_architecture = random.choice(data['architectures'])
     
     rand_choice = {
         "inputs": rand_input,
         "constraints": rand_constraint,
-        "outputs": rand_output
+        "architectures": rand_architecture
     }
     
     st.session_state.random.append(rand_choice)
@@ -93,13 +93,13 @@ if __name__ == "__main__":
             raw_data = json.load(file)
         # List of dicts
         inputs = raw_data['tables']['fabric_inputs']
-        constraints = raw_data['tables']['logic_constraints']
-        outputs = raw_data['tables']['output_mediums']
+        constraints = raw_data['tables']['notions_constraints']
+        architectures = raw_data['tables']['architecture_scenarios']
         
         data = {
             "inputs": inputs,
             "constraints": constraints,
-            "outputs": outputs
+            "architectures": architectures
         }
         
         st.session_state['data'] = data
