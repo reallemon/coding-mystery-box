@@ -1,8 +1,33 @@
 import streamlit as st
 import json
 import random
+from typing import TypedDict, Literal, cast
+    
+class Input(TypedDict):
+    name: str
+    description: str    
 
-def main(): 
+class Constraint(TypedDict):
+    name: str
+    description: str
+    
+class Architecture(TypedDict):
+    name: str
+    description: str
+
+class Option(TypedDict):
+    inputs: Input
+    constraints: Constraint
+    architectures: Architecture
+
+class Data(TypedDict):
+    inputs: list[Input]
+    constraints: list[Constraint]
+    architectures: list[Architecture]
+
+CategoryKey = Literal['inputs', 'constraints', 'architectures']
+
+def main() -> None: 
     st.set_page_config(page_title='Coding Mystery Box')
     
     if 'random' not in st.session_state:
@@ -20,11 +45,11 @@ def main():
     
     if st.session_state.random != []:
         for i in range(len(st.session_state.random) -1, -1, -1):
-            option = st.session_state.random[i]
+            option: Option = st.session_state.random[i]
             
             
             with st.container(border=True):
-                d_col_1, d_col_2 = st.columns([6,1])
+                d_col_1, d_col_2 = st.columns([6,1]) # type: ignore
                 
                 with d_col_2:
                     st.button('🗑️', key=f'delete_{i}', on_click=delete_index, args=(i,))
@@ -62,24 +87,24 @@ def main():
                     st.write('## Architecture')
                     st.write(f"{option['architectures']['name']}: {option['architectures']['description']}")
 
-def reroll_idea(index, category_key):
+def reroll_idea(index: int, category_key: CategoryKey) -> None:
     st.session_state.random[index][category_key] = random.choice(st.session_state['data'][category_key])
 
-def delete_index(index):
+def delete_index(index: int) -> None:
     del st.session_state.random[index]
 
-def clear_session_state():
+def clear_session_state() -> None:
     if 'random' in st.session_state:
         st.session_state['random'] = []
 
-def add_random_choice():
-    data = st.session_state['data']
+def add_random_choice() -> None:
+    data = cast(Data, st.session_state['data'])
             
-    rand_input = random.choice(data['inputs'])
-    rand_constraint = random.choice(data['constraints'])
-    rand_architecture = random.choice(data['architectures'])
+    rand_input: Input = random.choice(data['inputs'])
+    rand_constraint: Constraint = random.choice(data['constraints'])
+    rand_architecture: Architecture = random.choice(data['architectures'])
     
-    rand_choice = {
+    rand_choice: Option = {
         "inputs": rand_input,
         "constraints": rand_constraint,
         "architectures": rand_architecture
@@ -92,11 +117,11 @@ if __name__ == "__main__":
         with open('data.json', 'r') as file:
             raw_data = json.load(file)
         # List of dicts
-        inputs = raw_data['tables']['fabric_inputs']
-        constraints = raw_data['tables']['notions_constraints']
-        architectures = raw_data['tables']['architecture_scenarios']
+        inputs: list[Input] = raw_data['tables']['fabric_inputs']
+        constraints: list[Constraint] = raw_data['tables']['notions_constraints']
+        architectures: list[Architecture] = raw_data['tables']['architecture_scenarios']
         
-        data = {
+        data: Data = {
             "inputs": inputs,
             "constraints": constraints,
             "architectures": architectures
